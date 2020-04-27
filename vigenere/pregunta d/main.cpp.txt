@@ -1,0 +1,121 @@
+#include <iostream>
+#include <cadena>
+usando el espacio de nombres estándar;
+
+int maximo (int a, int b) {
+  si (b == - 1)
+    b = 0;
+  si (a == - 1)
+    a = 0;
+  si (b == 0)
+    devolver a;
+  si (a == 0)
+    volver b;
+  int q = a / b, r = a- (q * b);
+  mientras que (r! = 0) {
+    a = b;
+    b = r;
+    q = a / b;
+    r = a- (q * b);
+  }
+  volver b;
+}
+
+int maxsepara (string texto, int tam) {
+  int m = 0, a = -2, temp, contador = 0, def = 0;
+  cadena busca;
+  para (int j = 0; j <texto.size (); j ++) {
+      para (int k = j; k <j + tam; k ++)
+        busca + = texto [k];
+
+      para (int i = j;;) {
+        temp = a;
+
+        a = texto.find (busca, i ++);
+        if (a == - 1) {
+          rotura;
+        }
+        if (a! = - 1) {
+          contador ++;
+        }
+        if (contador> 1) {
+          if (a! = temp) {
+            i + = a;
+          }
+          
+          m = maximo (m, a-temp);
+        }
+      }
+    busca.erase (0, tam);
+    contador = 0;
+  }
+  volver m;
+}
+
+int contar (cadena a, cadena b, cadena c) {
+    cadena temp = a;
+    int contador = 0;
+
+    for (int i = 0; i <temp.size (); i ++) {
+        int k = a.find (c);
+        int j = a.find (b);
+        si (k! = -1) {
+            a = a.erase (0, k);
+            contador ++;
+            a = a.erase (0, c.size ());
+        }
+
+        si (j! = -1) {
+            a = a.erase (0, j);
+            contador ++;
+            a = a.erase (0, b.size ());
+        }
+    }
+    volver contador;
+}
+
+string convmay (string cadena) {
+    para (int i = 0; i <cadena.size (); i ++)
+        cadena [i] = toupper (cadena [i]);
+    cadena de retorno;
+}
+
+int main () {
+  int tam = 4, def = 0, temp = 0, ret;
+  cadena texto = "";
+  para (tam; tam <(texto.size () / 2) +1; tam ++) {
+    temp = ret;
+    def = maxsepara (texto, tam);
+    if (def> = temp) {
+      ret = def;
+      cout << "De cadenas de a" << tam << ", el maximo es:" << ret << endl;}
+  }
+
+  /////////////////////// Decidimos el tamaño con el cual trabajar, en este caso sera 14
+  int max = 14, cont = 0, tempcont = 0;
+  cadena tem, tem2, tem3, tem4;
+  string abc = "abcdefghijklmnopqrstuvwxyz";
+
+  para (int j = 0; j <max; j ++) {
+    para (int i = j; i <texto.size (); i + = max) {
+      tem + = texto [i];
+    }
+    cout << endl;
+    cout << tem << endl;
+    for (int k = 0; k <abc.size (); k ++) {
+      tem2 = abc [k];
+      tem3 = convmay (tem2);
+      cout << tem3 << "=";
+      cont = contar (tem, tem2, tem3);
+      cout << cont << ",";
+      if (cont> = tempcont) {
+        tempcont = cont;
+        tem4 = abc [k];}
+    }
+    cout << endl; 
+    cout << "El mas grande es:" << tem4 << "=" << tempcont << endl;
+    tem.erase (0, tem.size ());
+    cont = 0, tempcont = 0;
+    tem4.erase (0, tem4.size ());
+  }
+}
