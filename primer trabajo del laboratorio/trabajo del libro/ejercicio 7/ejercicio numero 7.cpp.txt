@@ -1,0 +1,65 @@
+#include <iostream>
+#include <cadena>
+#include <vector>
+usando el espacio de nombres estándar;
+bool ascendente (int a, int b) {
+    devuelve a <b;
+  } 
+bool descendente (int a, int b) {
+    volver a> b;} 
+
+nulo cambio (vector <int> & myvector, int i, int j) {
+  iter_swap (myvector.begin () + i, myvector.begin () + j);
+}
+
+void ordenar (vector <int> & myvector, bool (* compara) (int, int)) {
+  for (int i = 0; i <myvector.size (); i ++) {
+    int menor = i;
+    for (int j = i + 1; j <myvector.size (); j ++) {
+      if (! (* compara) (myvector [menor], myvector [j]))
+         menor = j;
+    }
+    cambio (myvector, i, menor);
+  }
+}
+
+vacío imprimir (vector <int> myvector) {
+  for (vector <int> :: iterator it = myvector.begin (); it! = myvector.end (); ++ it)
+    cout << * it << '';
+  cout << endl;
+}
+
+
+int main ()
+{
+  vector <int> myvector;
+  int numero, orden;
+
+  cout << "Ingresa los numeros (presiona 0 para terminar): \ n";
+  hacer {
+    cin >> numero;
+    myvector.push_back (numero); // agregar
+  } while (numero);
+
+  myvector.pop_back (); // eliminar ultimo
+
+  cout << "El vector alberga" << int (myvector.size ()) << "numeros" << endl;
+
+  imprimir (myvector);
+  cout << "Escriba 1 para orden ascendente: \ n" << "Escriba 2 para orden descendente:" << endl;
+  cin >> orden;
+  si (orden == 1)
+ {
+ ordenar (myvector, ascendente);
+ cout << "\ nElementos de datos en orden ascendente \ n";
+ }
+
+ más
+ {
+ ordenar (myvector, descendente);
+ cout << "\ nElementos de datos en orden descendente \ n";
+ } 
+  imprimir (myvector);
+ 
+  devuelve 0;
+}
