@@ -1,0 +1,52 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Escitala{
+  int alto;
+  int ancho;
+  public:
+  Escitala(int,int);
+  string cifrado(string);
+  string descifrado(string);
+};
+
+ Escitala::Escitala(int alto_n, int ancho_n){
+   alto=alto_n;
+   ancho=ancho_n;
+ }
+
+
+string Escitala::cifrado(string texto){
+  string cifrado;
+  for(int j=0; j<ancho; j++){
+    for(int i=j; i<texto.size(); i+=ancho){
+      cifrado+=texto[i];
+    }
+  }
+  return cifrado;
+}
+
+string Escitala::descifrado(string texto){
+  string descifrado;
+  for(int j=0; j<alto; j++){
+    for(int i=j; i<texto.size(); i+=alto){
+      descifrado+=texto[i];
+    }
+  }
+  return descifrado;
+}
+
+int main() {
+  string texto="HOLA MUNDO COMO ESTAS  ";
+  int ancho=6;
+  int alto=4;
+  Escitala algo(alto, ancho);
+  //cifrado=columnas(ancho)
+  //descifrado=filas(alto)
+  string cifra,descifra;
+  cifra=algo.cifrado(texto);
+  cout<<cifra<<endl;
+  descifra=algo.descifrado(cifra);
+  cout<<descifra<<endl;
+}

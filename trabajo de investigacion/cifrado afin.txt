@@ -1,0 +1,139 @@
+#include <iostream>
+#include <string>
+#include <stdlib.h>
+#include <time.h>
+#include <stdio.h>
+#include <random>
+
+using namespace std;
+class Afin
+{
+public:
+	Afin();
+	Afin(int, int);
+	string texto, cifrado(string), descifrar(string);
+	string abecedario = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-";
+	int random(), generarcalveA(int), euclides(int, int), inversoCalveA(int, int),  modulo(int, int);
+	int claveA, claveB, ran, ran2, inver, tamaño;
+};
+
+
+
+Afin::Afin(){
+	int num = abecedario.size();
+	claveA = generarcalveA(num);
+	ran = claveA;
+	claveB = random();
+	ran2 = claveB;
+
+}
+
+Afin::Afin(int a, int b){
+	claveA = a;
+	tamaño = abecedario.size();
+	inver = inversoCalveA(claveA, tamaño);
+	claveB = b;
+}
+
+int Afin::modulo(int numero, int modulo){
+	if (numero<modulo && numero>0){
+		return numero;
+	}
+	int cociente = numero / modulo;
+	int resto = numero - cociente*modulo;
+	if (resto<0){
+		return resto + modulo;
+	}
+	return resto;
+}
+int Afin::euclides(int m, int n){
+	if (m == 0)
+		return n;
+	while (n != 0){
+		if (n >= m)
+			n = n - m;
+		else
+			m = m - n;
+	}
+	return m;
+}
+
+int Afin::random(){
+	random_device dev;
+	mt19937 rng(dev());
+	uniform_int_distribution<mt19937::result_type> random(0,400);
+	return random(rng);
+}
+int Afin::generarcalveA(int tamaño){
+	int a = random();
+	int b = euclides(a, tamaño);
+	if (b == 1){
+		return a;
+	}
+	else
+		return generarcalveA(tamaño);
+	
+}
+
+int Afin::inversoCalveA(int entero, int modulonum)
+{
+	int modulo_cero = modulonum, variable, cociente;
+	int variable0 = 0, variable1 = 1;
+	while (entero > 1) {
+		cociente = entero / modulonum;
+		variable = modulonum;
+		modulonum = modulo(entero, modulonum);
+		entero = variable;
+		variable = variable0;
+		variable0 = variable1 - cociente * variable0;
+		variable1 = variable;
+	}
+	if (variable1 < 0)
+	{
+		variable1 += modulo_cero;
+	}
+	return variable1;
+}
+string Afin::cifrado(string texto){
+	int tamtex=texto.size();
+	int tamabc = abecedario.size();
+	string cifrado;
+	for (int i = 0; i<tamtex; i++){
+		int indice = abecedario.find(texto[i]);
+		int variable = modulo(ran*indice,tamabc);
+		int variable2 = modulo(variable + ran2,tamabc);
+		int nuevoindice = modulo(variable2, tamabc);
+		cifrado.push_back(abecedario[nuevoindice]);
+	}
+	cout << "ClaveA: " << ran << endl;
+	cout << "ClaveB: " << ran2 << endl;
+	return cifrado;
+}
+string Afin::descifrar(string texto){
+	string descifrado;
+	int tamtex = texto.size();
+	int tamabc = abecedario.size();
+	for (int i = 0; i<tamtex; i++){
+		int indice = abecedario.find(texto[i]);
+		int variable = modulo(inver*indice, tamabc);
+		int variable2 = modulo(variable - claveB, tamabc);
+		int nuevoindice = modulo(variable2, tamabc);
+		descifrado.push_back(abecedario[nuevoindice]);
+	}
+	return descifrado;
+}
+
+
+
+
+int main() {
+	Afin emisor;
+	Afin receptor(1, 78);
+	
+	string mensaje = "vamo a ratear";
+	string cifrado = emisor.cifrado(mensaje);
+	cout << cifrado<<endl;
+	string descifrado = receptor.descifrar("Io BNoNEoGsoE");
+	cout << descifrado<< endl;
+	system("pause");
+}
