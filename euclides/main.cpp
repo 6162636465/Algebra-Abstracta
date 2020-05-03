@@ -1,14 +1,17 @@
 #include <iostream>
 #include <string>
+#include <ctime>
+#include <cstdlib>
+#include <NTL/ZZ.h>
 using namespace std;
-
-int positivo(int a){
+using namespace NTL;
+ZZ positivo(ZZ a){
   if(a<0)
     a*=-1;
   return a;
 }
 
-int modulo(int a,int b){
+ZZ modulo(ZZ a, ZZ b){
     if(a>=0)
         return a-(a/b)*b;
     else
@@ -17,48 +20,47 @@ int modulo(int a,int b){
 
 
 //Execution Time: 8e-06
-int algoritmo1(int a, int b){
-  cout<<"Ingreso con los numeros "<<a<<" y "<<b<<endl;
-  int r;
+ZZ algoritmo1(ZZ a,ZZ b){
+  //cout<<"Ingreso con los numeros "<<a<<" y "<<b<<endl;
+  ZZ r;
   while(true){
     r=modulo(a,b);
-    cout<<"r= "<<r<<endl;
+    //cout<<"r= "<<r<<endl;
     if(r==0)
       return b;
     a=b;
-    cout<<"a= "<<a<<endl;
+    //cout<<"a= "<<a<<endl;
     b=r;
-    cout<<"b= "<<b<<endl<<endl;
+    //cout<<"b= "<<b<<endl<<endl;
   }
 }
 
 
 //Execution Time: 2e-06
-int algoritmo2(int a, int b){
-  cout<<"Ingreso con los numeros "<<a<<" y "<<b<<endl;
-  int r;
+ZZ algoritmo2(ZZ a,ZZ b){
+  //cout<<"Ingreso con los numeros "<<a<<" y "<<b<<endl;
+  ZZ r;
   while(true){
     r=modulo(a,b);
-    cout<<"r= "<<r<<endl;
+    //cout<<"r= "<<r<<endl;
     if(r==0)
       return b;
     if(r>(b/2)){
-      r=b-r;cout<<"r= "<<r<<endl;
+      //r=b-r;cout<<"r= "<<r<<endl;
     }
     a=b;
-    cout<<"a= "<<a<<endl;
+    //cout<<"a= "<<a<<endl;
     b=r;
-    cout<<"b= "<<b<<endl<<endl;
+    //cout<<"b= "<<b<<endl<<endl;
   }
 }
 
 
 
 //Execution Time: 3e-06
-int algoritmo3(int a, int b){
+ZZ algoritmo3(ZZ a, ZZ b){
   if(a<0||b<0){
     cout<<"Numero negativo detectado"<<endl;
-    return 0;
   }
   if(b==0)
     return a;
@@ -69,65 +71,71 @@ int algoritmo3(int a, int b){
 
 
 //Execution Time: 4e-06
-int algoritmo4(int a, int b){
-  if(positivo(b) > positivo(a)){
+ZZ algoritmo4(ZZ a,ZZ b){
+  ZZ x;
+  x=2;
+  if(positivo(b) > positivo(a))
+    {
     cout<<"Retornmos MCD("<<b<<", "<< a<<")"<<endl;
-    return algoritmo4(b,a);}
+    return algoritmo4(b,a);
+    }
   if(b==0)
     return a;
-  if( (modulo(a,2)==0) && (modulo(b,2)==0) ){
-    cout<<"Retornmos MCD 2*("<<a/2<<", "<< b/2<<")"<<endl;
-    return 2*algoritmo4(a/2, b/2);}
-  if( (modulo(a,2)==0) && (modulo(b,2)!=0) ){
+  if( (modulo(a,x)==0) && (modulo(b,x)==0) ){
+    cout<<"Retornmos MCD 2*("<<a/x<<", "<< b/x<<")"<<endl;
+    return 2*algoritmo4(a/x, b/x);}
+  if( (modulo(a,x)==0) && (modulo(b,x)!=0) ){
     cout<<"Retornmos MCD("<<a/2<<", "<< b<<")"<<endl;
-    return algoritmo4(a/2, b);}
-  if( (modulo(a,2)!=0) && (modulo(b,2)==0) ){
-    cout<<"Retornmos MCD("<<a<<", "<< b/2<<")"<<endl;
-    return algoritmo4(a, b/2);}
+    return algoritmo4(a/x, b);}
+  if( (modulo(a,x)!=0) && (modulo(b,x)==0) ){
+    cout<<"Retornmos MCD("<<a<<", "<< b/x<<")"<<endl;
+    return algoritmo4(a, b/x);}
   cout<<"Retornmos MCD("<<(positivo(a)- positivo(b) )/2<<", "<< b<<")"<<endl;
   return algoritmo4( (positivo(a)- positivo(b) )/2,b );
 }
 
 
 //Execution Time: 3e-06
-int algoritmo5(int x, int y){
-  cout<<"Ingreso con los numeros "<<x<<" y "<<y<<endl;
+ZZ algoritmo5(ZZ x,ZZ y){
+ cout<<"Ingreso con los numeros "<<x<<" y "<<y<<endl;
   if(y>x){
-    int temp=x;
+    ZZ temp=x;
     x=y;
     y=temp;
-    cout<<"Swap entre x y y"<<endl;
+    //cout<<"Swap entre x y y"<<endl;
   }
-  int g=1;
-  while( (modulo(x,2)==0) && (modulo(y,2)==0) ){
+  ZZ g,j;
+  g=1;
+  j=2;
+  while( (modulo(x,j)==0) && (modulo(y,j)==0) ){
     cout<<"Ambos son pares"<<endl;
-    x/=2;
-    cout<<"x= "<<x<<endl;
-    y/=2;
-    cout<<"y= "<<y<<endl;
-    g=2*g;
-    cout<<"g= "<<g<<endl;
+    x/=j;
+    //cout<<"x= "<<x<<endl;
+    y/=j;
+    //cout<<"y= "<<y<<endl;
+    g=j*g;
+   // cout<<"g= "<<g<<endl;
   }
   while(x!=0){
-    while(modulo(x,2)==0){
-      cout<<"x es par"<<endl;
-      x=x/2;
-      cout<<"x= "<<x<<endl;
+    while(modulo(x,j)==0){
+     // cout<<"x es par"<<endl;
+      x=x/j;
+      //cout<<"x= "<<x<<endl;
       }
-    while(modulo(y,2)==0){
-      cout<<"y es par"<<endl;
-      y=y/2;
-      cout<<"y= "<<x<<endl;
+    while(modulo(y,j)==0){
+     // cout<<"y es par"<<endl;
+      y=y/j;
+    //  cout<<"y= "<<x<<endl;
       }
-    int t=positivo(x-y)/2;
-    cout<<"t= (x-y)/2= "<<t<<endl;
+    ZZ t=positivo(x-y)/j;
+    //cout<<"t= (x-y)/2= "<<t<<endl;
     if(x >= y){
       x=t;
-      cout<<"x= "<<x<<endl;
+    //  cout<<"x= "<<x<<endl;
       }
     else{
       y=t;
-      cout<<"y= "<<x<<endl;
+      //cout<<"y= "<<x<<endl;
       }
   }
   return (g*y);
@@ -135,14 +143,14 @@ int algoritmo5(int x, int y){
 
 
 //Execution Time: 2e-06
-int algoritmo6(int a, int b){
+ZZ algoritmo6(ZZ a,ZZ b){
   while(a!=b){
-    cout<<"a= "<<a<<", b= "<<b<<endl;
+    //cout<<"a= "<<a<<", b= "<<b<<endl;
     if( a > b ){
-      a-=b;cout<<"a= "<<a<<endl;
+      a-=b;//cout<<"a= "<<a<<endl;
       }
     else {
-      b-=a;cout<<"b= "<<b<<endl;
+      b-=a;//cout<<"b= "<<b<<endl;
     }
   }
   return a;
@@ -151,11 +159,13 @@ int algoritmo6(int a, int b){
 //4
 int main(){
 clock_t t0=clock();
-int a=algoritmo1
-(412,260);
+ZZ a, b, c;
+b=4666666666666666666666666666666666666666666666666666666;
+c=33333222222222222222222222222222222222222222222222222222222;
+a=algoritmo6(b,c);
 cout<<"MCD= "<<a<<endl;
 clock_t t1 = clock();
- 
+
 double time = (double(t1-t0)/CLOCKS_PER_SEC);
 cout << "Execution Time: " << time << endl;
 return 0;
