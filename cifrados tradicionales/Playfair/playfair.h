@@ -15,7 +15,7 @@ private:
 public:
   cifrado(string,string,string);
   void cifrar();
-  int nuevoAlfabeto(string);
+  string nuevoAlfabeto(string);
   string Alfabeto();
   void decifrar();
 };
@@ -49,18 +49,32 @@ string cifrado::Alfabeto()
   return aiuda;
 }
 
-int cifrado::nuevoAlfabeto(string A)
+string cifrado::nuevoAlfabeto(string A)
 {
+  string aiuda=A;
   for(int i=0;i<u.length();i++)
   {
-    for(int j=0;j<x.length();j++)
+    int pop=0;
+    for(int j=0;j<aiuda.length();j++)
     {
-      if()
+      if(u[i]==aiuda[j])
+      {
+        pop=pop+1;
+      }
+    }
+    if(pop==0)
+    {
+      if(u[i]!=' ')
+      {
+        aiuda=aiuda+u[i];
+      }
     }
   }
+  return aiuda;
 }
 void cifrado::cifrar()
 {
   string alfabeto2=Alfabeto();//quitarle las letras repetidas
   string alfabeto3=nuevoAlfabeto(alfabeto2);
+  cout<<alfabeto3<<"tamaño ="<<alfabeto3.length()<<endl;
 }
