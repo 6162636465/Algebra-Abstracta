@@ -1,0 +1,76 @@
+#include <stdlib.h>
+#include <time.h>
+#include <iostream>
+#include <random>
+#include <string>
+#include <vector>
+#include <math.h>
+using namespace std;
+class criba
+{
+  private:
+    int x;
+  public:
+  criba(int);
+    int modulo(int,int);
+    void imprimir(vector<int>);
+    int random(int);
+    void primo();
+};
+criba::criba(int _x)
+{
+  x=_x;
+}
+int criba::modulo(int a, int b){
+    if(a>=0)
+        return a-(a/b)*b;
+    else
+        return a-((a/b)-1)*b;
+}
+
+int criba::random(int max){
+	random_device dev;
+	mt19937 rng(dev());
+	uniform_int_distribution<mt19937::result_type> random(0,max);
+	return random(rng);
+}
+
+void criba::imprimir(vector<int>myvector){
+  for (vector<int>::iterator it = myvector.begin() ; it != myvector.end(); ++it)
+    cout<< *it<< ' ' ;
+  cout<<endl;
+}
+
+
+void criba::primo(){
+  int numero=x;
+  vector<int> primos;
+  vector<int>::iterator temp;
+  int limite=sqrt(numero);
+
+  for(int i=1; i<=numero; i++)
+    primos.push_back(i);
+
+  for(int j=2; j<=limite; j++){
+    for (vector<int>::iterator it = primos.begin()+j ; it != primos.end(); it++){
+      temp=it;
+      if(modulo( *temp ,j)==0){
+        primos.erase(temp);
+        it--;
+      }
+    }
+  }
+  imprimir(primos);
+  int pos=modulo(random(primos.size()*5), primos.size() );
+  vector<int>::iterator it = primos.begin()+pos;
+  cout<<*it<<endl;
+}
+
+int main()
+{
+  int x;
+  cout<<"ponga un numero n para sacar los numeros primos hasta n"<<endl,
+  cin>>x;
+  criba p1 = criba(x);
+  p1.primo();
+}
