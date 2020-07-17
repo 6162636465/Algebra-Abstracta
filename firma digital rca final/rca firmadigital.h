@@ -12,16 +12,16 @@ using namespace std;
 using namespace NTL;
 #ifndef RCA_FIRMADIGITAL_H_INCLUDED
 #define RCA_FIRMADIGITAL_H_INCLUDED
+#endif // RCA_FIRMADIGITAL_H_INCLUDE
 
-
-
-#endif // RCA_FIRMADIGITAL_H_INCLUDED
 class RSA {
 	ZZ claveprivada;//e
 	ZZ semilla;
+	ZZ semillaB;
 	ZZ p;
 	ZZ q;
 	ZZ semillabits;
+	ZZ semillabitsB;
 	ZZ phiden;
 	ZZ n_priv;
     ZZ clavepublica_mia;//e
@@ -30,55 +30,75 @@ class RSA {
 	ZZ bits;
 	string abecedario;
 public:
-    DWORD nicks=0*459849;
+    DWORD nicks=0*459859;
 	RSA(ZZ), RSA(ZZ, ZZ);
-	ZZ modulozz(ZZ, ZZ), mcd(ZZ, ZZ), inversa(ZZ, ZZ), potenciar(ZZ, ZZ), modular_pow(ZZ, ZZ, ZZ), randomprimo2(int);
+	ZZ modulozz(ZZ, ZZ);
+	ZZ mcd(ZZ, ZZ);
+	ZZ inversa(ZZ, ZZ);
+	ZZ potenciar(ZZ, ZZ);
+	ZZ modular_pow(ZZ, ZZ, ZZ);
+	ZZrandomprimo2(int);
 	ZZ stringtozz(string);
-	//bool test_primo(ZZ);
 	ZZ clavepublica_otro, n_otro, maximo;
 	ZZ generadorS();
-	ZZ usobits();
+	ZZ generadorA();
+	ZZ usobits(ZZ);
 	int zztoint(ZZ), moduloint(int, int);
 	string inttostring(int), zztostring(ZZ);
-	string cifrado_firma(string), cifrado_rubrica(string);
-	string descifrado_firma(string), descifrado_rubrica(string), igualar(string, ZZ), completar(string, int);
+	string cifrado_firma(string);
+	string cifrado_rubrica(string);
+	string descifrado_firma(string);
+	string descifrado_rubrica(string);
+	string igualar(string, ZZ);
+	string completar(string, int);
 };
-
 RSA::RSA(ZZ maximo_bits) {
     bits=maximo_bits;
     semilla=generadorS();
-    semillabits=usobits();
+    semillaB=generadorA();
+    semillabits=usobits(semilla);
+    semillabitsB=usobits(semillaB);
 	maximo = maximo_bits;
 	string tempp, tempq, temppublica;
-	p = RandomPrime_ZZ(18);
-	tempp = "215497";//p
-	p = stringtozz(tempp);//guardar p
-	q = RandomPrime_ZZ(18);
-	tempq = "209929";//q
-	q = stringtozz(tempq);//guardar q
+	p = semillabits;
+	tempp = "252869";//p
+	//p = stringtozz(tempp);//guardar p
+	q = semillabitsB;
+	tempq = "215909";//q
+	//q = stringtozz(tempq);//guardar q
 	n_priv = p * q;
 	phiden = (p - 1) * (q - 1);
 	clavepublica_mia = RandomPrime_ZZ(10);
-	temppublica = "701";//clave publica
+	temppublica = "1021";//clave publica
 	clavepublica_mia = stringtozz(temppublica);//guardar clave publica
 	claveprivada = modulozz(clavepublica_mia, phiden);
 	claveprivada = inversa(claveprivada, phiden);
-	claveprivada = modulozz(claveprivada, phiden);
 	abecedario = "ABCDEFGHIJKLMNOPQRSTUVWXYZ,.-( )abcdefghijklmnopqrstuvwxyz<>*1234567890";
 	cout << "abecedario : " << semillabits<< endl << endl;
-	cout << "semilla : " << semilla << endl << endl;
+	cout << "semilla : " << semillaB << endl << endl;
 	cout << "p: " << p << endl << endl << "q: " << q << endl << endl;
 	cout << "N: " << n_priv<< endl << endl;
 	cout << "Fi de N: " << phiden << endl << endl;
 	cout << "Clave publica(e): " << clavepublica_mia << endl << endl;
 	cout << "Clave privada(d): " << claveprivada << endl << endl;;
 }
-
 RSA::RSA(ZZ nreceptor, ZZ clave_publica) {
 	clavepublica_otro = clave_publica;
 	n_otro = nreceptor;
 }
 ZZ RSA::generadorS(){
+    HWND ventana;
+    DWORD pid;
+    HANDLE hp;
+    char buffer[222];//char usado para almacenar una direccion de memoria no afecta al codigo
+    ventana=FindWindow(0,"Discord");//aplicacion determinada
+    GetWindowThreadProcessId(ventana,&pid);
+    hp=OpenProcess(PROCESS_ALL_ACCESS,true,pid);
+    ReadProcessMemory(hp,(PBYTE*)nicks,&buffer,sizeof(buffer),0);
+    ZZ x = conv<ZZ>(pid);//convierto int a zz
+    return x;
+}
+ZZ RSA::generadorA(){
     HWND ventana;
     DWORD pid;
     HANDLE hp;
@@ -90,7 +110,7 @@ ZZ RSA::generadorS(){
     ZZ x = conv<ZZ>(pid);//convierto int a zz
     return x;
 }
-ZZ RSA::usobits(){
+ZZ RSA::usobits(ZZ wuw){
     ZZ x,i,minimo,maximo,valor1,valor2;
     x=1;
     for(i=0;i<bits;i++)
@@ -99,7 +119,7 @@ ZZ RSA::usobits(){
     minimo=x/2;
     maximo=x-1;
     ZZ adan;
-    adan=semilla;
+    adan=wuw;
     bool popa=true,papa=true;
     string nani=zztostring(minimo);
     string te=zztostring(adan);
@@ -137,7 +157,6 @@ int RSA::moduloint(int a, int b) {
 	else
 		return a - ((a / b) - 1) * b;
 }
-
 ZZ RSA::modulozz(ZZ a, ZZ b) {
 	if (a >= 0)
 		return a - (a / b) * b;
@@ -161,7 +180,6 @@ ZZ RSA::mcd(ZZ a, ZZ b) {
 		b = r;
 	}
 }
-
 ZZ RSA::inversa(ZZ entero, ZZ modulonum) {
 	if (mcd(entero, modulonum) != 1) {
 		cout << "Este numero no tiene inversa" << endl;
@@ -184,7 +202,6 @@ ZZ RSA::inversa(ZZ entero, ZZ modulonum) {
 		variable1 += modulo_cero;
 	return variable1;
 }
-
 ZZ RSA::potenciar(ZZ base, ZZ elevar) {
 	ZZ total, i;
 	total = 1; i = 0;
@@ -193,7 +210,6 @@ ZZ RSA::potenciar(ZZ base, ZZ elevar) {
 	}
 	return total;
 }
-
 ZZ RSA::modular_pow(ZZ base, ZZ exponenete, ZZ mod) {
 	ZZ result, dos;
 	result = 1, dos = 2;
@@ -205,66 +221,33 @@ ZZ RSA::modular_pow(ZZ base, ZZ exponenete, ZZ mod) {
 	}
 	return result;
 }
-
 string RSA::inttostring(int a) {
 	ostringstream temp;
 	temp << a;
 	return temp.str();
 }
-
 string RSA::zztostring(ZZ num) {
 	stringstream buffer;
 	buffer << num;
 	return buffer.str();
 }
-
 int RSA::zztoint(ZZ num) {
 	string temp = zztostring(num);
 	int numero = stoi(temp);
 	return numero;
 }
-
 ZZ RSA::stringtozz(string str) {
 	ZZ z(NTL::INIT_VAL, str.c_str());
 	return z;
 }
-
 int random(int max) {
 	random_device dev;
 	mt19937 rng(dev());
 	uniform_int_distribution<mt19937::result_type> random(0, max);
 	return random(rng);
 }
-/*
-bool RSA::test_primo(ZZ num) {
-	ZZ limite, j;
-	limite = sqtr(num);
-	for (j = 2; j <= limite; j++) {
-		if (modulozz(num, j) == 0) {
-			return false;
-		}
-	}
-	return true;
-}
 
-ZZ RSA::randomprimo2(int numero) {
-	Vec<ZZ> primos; ZZ dos, pos, temp, rand, longitud;
-	dos = 2, temp = numero;
-	ZZ minimo = (potenciar(dos, temp)) / 2;
-	ZZ maximo = (potenciar(dos, temp)) - 1;
-	cout << "El numero esta en el intervalo de " << minimo << " a " << maximo << endl;
-	for (ZZ i = minimo; i <= maximo; i++) {
-		if (test_primo(i) == true)
-			primos+=(i);
-	}
-	int ran = random(primos.length() * 5); long size = primos.length();
-	rand = ran, longitud = size;
-	ZZ pos = modulozz(rand, longitud);
-	Vec<ZZ>::iterator it = primos.begin() + pos;
-	return *it;
-}*/
-
-string RSA::igualar(string letra, ZZ maximo) {
+string RSA::igualar(string letra, ZZ maximo) {//agregar 0
 	string ret;
 	ZZ hueco = ZZ(letra.size());
 	hueco = maximo - hueco;
@@ -273,7 +256,6 @@ string RSA::igualar(string letra, ZZ maximo) {
 	ret += letra;
 	return ret;
 }
-
 string RSA::completar(string mensaje, int division) {
 	string dev;
 	int size = mensaje.size();
@@ -290,7 +272,6 @@ string RSA::completar(string mensaje, int division) {
 	}
 	return mensaje;
 }
-
 ZZ RSA::resto_chino(ZZ pos) {
 	ZZ dp, dq, expP, expQ, p_resto, p1, p2, q1, q2, res, d1, d2;
 	expP = modulozz(claveprivada, p - 1);
@@ -307,17 +288,16 @@ ZZ RSA::resto_chino(ZZ pos) {
 	res = modulozz(res, n_priv);
 	return res;
 }
-
 string RSA::cifrado_rubrica(string mensaje) {
-	cout << "-------------------------CIFRADO RUBRICA---------------------------------" << endl;
+	cout << "RUBRICA" << endl;
 	string texto, conv, temp, temp2, igua, igua2;
 	ZZ pos, tam, pos2;
 	tam = abecedario.size();
 	for (int i = 0; i < mensaje.size(); i++) {
 		pos = abecedario.find(mensaje[i]);
 		igua = zztostring(pos);
-		igua2 = zztostring(tam);
-		conv += igualar(igua, ZZ(igua2.size()));
+		igua2 = zztostring(tam);//cambio
+		conv += igualar(igua, ZZ(igua2.size()));//letra i , tamaño de abecedario
 	}
 	string ntemp = zztostring(n_priv);
 	int bloques = ntemp.size() - 1;
@@ -337,9 +317,8 @@ string RSA::cifrado_rubrica(string mensaje) {
 	return texto;
 }
 
-
 string RSA::cifrado_firma(string mensaje) {
-	cout << "-------------------------CIFRADO FIRMA---------------------------------" << endl;
+	cout << "FIRMA" << endl;
 	string texto, conv, temp, temp2, igua, igua2;
 	ZZ pos, tam, pos2;
 	tam = abecedario.size();
@@ -367,9 +346,8 @@ string RSA::cifrado_firma(string mensaje) {
 	return texto;
 }
 
-
 string RSA::descifrado_firma(string cifrado) {
-	cout << "-------------------------DESCIFRADO FIRMA---------------------------------" << endl;
+	cout << "FIRMA" << endl;
 	string texto, conv, temp, temp2;
 	ZZ pos, tam, pos2;
 	int indice;
@@ -412,9 +390,8 @@ string RSA::descifrado_firma(string cifrado) {
 	descifrado.pop_back();
 	return descifrado;
 }
-
 string RSA::descifrado_rubrica(string cifrado) {
-	cout << "-------------------------DESCIFRADO RUBRICA---------------------------------" << endl;
+	cout << "RUBRICA :"<< endl;
 	string texto, conv, temp, temp2;
 	ZZ pos, tam, pos2;
 	int indice;
